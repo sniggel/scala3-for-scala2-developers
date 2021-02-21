@@ -49,4 +49,5 @@ object welcome:
 //    print(changedEmail)
 
     val newEmail = caseClassApply("hello")
+    
   }
