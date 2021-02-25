@@ -7,6 +7,16 @@
  * with additional flexibility that plays well with third-party data types.
  */
 object typeclass_basics:
+  def main(args: Array[String]): Unit = {
+    val person = Person("Bob", 37)
+    person.prettyPrint
+    
+    prettyPrintIt(person)
+    prettyPrintIt(1)
+    prettyPrintIt(2.0)
+    prettyPrintIt(3.0f)
+  }
+
   trait PrettyPrint[-A]:
     extension (a: A) def prettyPrint: String
 
@@ -24,6 +34,8 @@ object typeclass_basics:
    * data type `Person` that renders the person in a pretty way.
    */
   // given
+  given PrettyPrint[Person] with
+    extension (p: Person) def prettyPrint: String = s"${p.name}, ${p.age} years old."
 
   /**
    * EXERCISE 2
@@ -32,20 +44,28 @@ object typeclass_basics:
    * for the data type `Int` that renders the integer in a pretty way.
    */
   // given intPrettyPrint as ...
+  given PrettyPrint[Int] with
+    extension (i: Int) def prettyPrint: String = s"integer: $i"
+
+  given PrettyPrint[Double] with
+    extension (d: Double) def prettyPrint: String = s"double: $d"
+  
+  given PrettyPrint[Float] with
+    extension (f: Float) def prettyPrint: String = s"float: $f"
 
   /**
    * EXERCISE 3
    * 
    * Using the `summon` function, summon an instance of `PrettyPrint` for `String`.
    */
-  val stringPrettyPrint: PrettyPrint[String] = ???
+  val stringPrettyPrint: PrettyPrint[String] = summon[PrettyPrint[String]]
 
   /**
    * EXERCISE 4
    * 
    * Using the `summon` function, summon an instance of `PrettyPrint` for `Int`.
    */
-  val intPrettyPrint: PrettyPrint[Int] = ???
+  val intPrettyPrint: PrettyPrint[Int] = summon[PrettyPrint[Int]]
 
   /**
    * EXERCISE 5
@@ -54,7 +74,7 @@ object typeclass_basics:
    * `A` for which a `PrettyPrint` instance exists, can both generate a pretty-print string, and 
    * print it out to the console using `println`.
    */
-  def prettyPrintIt = ???
+  def prettyPrintIt[A](a: A)(using PrettyPrint[A]) = println(a.prettyPrint)
 
   /**
    * EXERCISE 6
